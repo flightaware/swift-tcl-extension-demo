@@ -15,6 +15,7 @@ ifeq ($(UNAME_S),Darwin)
 	-Xlinker -L$(TCLLIBPATH) \
 	-Xcc -I$(TCLINCPATH)
     TARGET = .build/debug/libSwiftTclExtDemo.dylib
+    PROJECT = SwiftTclDemoExt.xcodeproj
 endif
 
 default: $(TARGET)
@@ -30,5 +31,14 @@ $(TARGET): Sources/demoext.swift
 test: $(TARGET)
 	tclsh8.6 packages/extension_test.tcl
 
+xcode: $(PROJECT)
+
 clean:
-	rm -rf .build $(TARGET) Package.pins
+	rm -rf .build $(TARGET) Package.pins $(PROJECT)
+
+$(PROJECT): Package.swift Makefile
+	@echo Generating Xcode project
+	swift package -Xlinker -L/usr/local/lib -Xlinker -L$(TCLLIBPATH) -Xlinker -ltcl8.6 -Xlinker -ltclstub8.6 generate-xcodeproj
+	@echo "NOTE: You will need to manually set the working directory for the SwiftTclDemo scheme to the root directory of this tree."
+	@echo "Thanks Apple"
+

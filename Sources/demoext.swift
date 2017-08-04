@@ -42,9 +42,6 @@ class ChannelReader {
     */
     func readChannel (interp: TclInterp, objv: [TclObj]) -> String {
         if let channelName:String = try? objv[1].get() {
-            if channelName.characters.count > 0 {
-                return channelName
-            }
             let fd = getNativeFdFromChannelName(channelName)
             if (fd < 0) {
                 return "Unable to get native fd for \(channelName)"
